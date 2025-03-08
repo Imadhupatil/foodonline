@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 # Create your models here.
-class UserManagar(BaseUserManager):
+class UserMangar(BaseUserManager):
   #will contain methods
   def create_user(self,first_name,last_name,username,email,password=None):
     if not email:
@@ -36,6 +36,7 @@ class UserManagar(BaseUserManager):
     user.is_superadmin = True
 
     user.save(using=self._db)
+    return user
 
 
 class User(AbstractBaseUser):
@@ -44,7 +45,7 @@ class User(AbstractBaseUser):
   CUSTOMER = 2 
 
   ROLE_CHOICES = (
-    (VENDOR,'VENDOR'),
+    (VENDOR,'Vendor'),
     (CUSTOMER,'Customer'),
   )
 
@@ -71,7 +72,7 @@ class User(AbstractBaseUser):
 
   REQUIRED_FIELDS = ['username','first_name','last_name']
 
-  objects = UserManagar()
+  objects = UserMangar()
 
   def __str__(self):
     return self.email
@@ -83,6 +84,14 @@ class User(AbstractBaseUser):
   #return Ture if user is active and superadmin
   def has_module_perms(self,app_lable):
     return True
+  
+  #get role of user
+  def get_role(self):
+    if self.role == 1:
+      user_role = "Vendor"
+    elif self.role == 2:
+      user_role = "Customer"
+    return user_role
   
 
 class UserProfile(models.Model):
